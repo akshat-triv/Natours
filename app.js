@@ -20,8 +20,6 @@ const viewRouter = require('./routes/viewRoutes');
 //start the app
 const app = express();
 
-app.use(helmet());
-
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
