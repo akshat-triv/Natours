@@ -23,31 +23,6 @@ const app = express();
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(helmet());
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'", 'https://*.mapbox.com', 'https://*.stripe.com'],
-        baseUri: ["'self'"],
-        fontSrc: ["'self'", 'https:', 'data:'],
-        imgSrc: ["'self'", 'data:'],
-        scriptSrc: [
-          "'self'",
-          'https://js.stripe.com/v3',
-          'https://cdnjs.cloudflare.com',
-          'https://api.mapbox.com',
-          'blob:',
-        ],
-        objectSrc: ["'none'"],
-        frameSrc: ["'self'", 'https://*.stripe.com/'],
-        styleSrc: ["'self'", 'https:', 'unsafe-inline'],
-        upgradeInsecureRequests: [],
-      },
-    })
-  );
-}
-
 app.use(express.json({ limit: '10kb' }));
 app.use(cookieParser());
 
