@@ -12,7 +12,7 @@ const createToken = (id) => {
   });
 };
 
-const sendToken = (id, data, res, mess = undefined) => {
+const sendToken = (id, data, statusCode, req, res, mess = undefined) => {
   const token = createToken(id);
 
   const cookieOptions = {
@@ -20,6 +20,7 @@ const sendToken = (id, data, res, mess = undefined) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   };
 
   //if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
@@ -28,7 +29,7 @@ const sendToken = (id, data, res, mess = undefined) => {
 
   if (data) data.password = undefined;
 
-  res.status(201).json({
+  res.status(statusCode).json({
     status: 'success',
     token: token,
     data,
@@ -52,7 +53,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     `${req.protocol}://${req.get('host')}/me`
   ).sendWelcome();
 
-  sendToken(user._id, user, res);
+  sendToken(user._id, user, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -75,7 +76,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Invalid email or password', 401));
   }
 
-  sendToken(user._id, undefined, res);
+  sendToken(user._id, undefined, 200, req, res);
 });
 
 exports.logout = (req, res, next) => {
@@ -231,7 +232,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   //4) Logging in the user by sending the jwt
-  sendToken(user._id, undefined, res);
+  sendToken(user._id, undefined, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -268,5 +269,12 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   //4) Logging in the user by sending the jwt
-  sendToken(user._id, undefined, res, 'Your password was changed successfully');
+  sendToken(
+    user._id,
+    undefined,
+    200,
+    req,
+    res,
+    'Your password was changed successfully'
+  );
 });
