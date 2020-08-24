@@ -151,10 +151,10 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.date} millisecondes`);
-  next();
-});
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.date} millisecondes`);
+//   next();
+// });
 
 //Aggregation MiddleWare: runs before all the aggregation pipelines
 
