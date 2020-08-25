@@ -48,6 +48,25 @@ exports.getLoginForm = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getSignupForm = catchAsync(async (req, res, next) => {
+  res.status(200).render('login', {
+    title: 'Signup',
+  });
+});
+
+exports.getForgotForm = catchAsync(async (req, res, next) => {
+  res.status(200).render('login', {
+    title: 'Forgot my password',
+  });
+});
+
+exports.getResetForm = catchAsync(async (req, res, next) => {
+  res.status(200).render('reset', {
+    title: 'Reset password',
+    token: req.params.token,
+  });
+});
+
 exports.getAccount = catchAsync(async (req, res, next) => {
   res.status(200).render('account', {
     title: 'My account',

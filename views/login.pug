@@ -4,13 +4,24 @@ block content
 
     main.main
         .login-form
-            h2.heading-secondary.ma-bt-lg Log into your account
-            form.form.form-login
+            h2.heading-secondary.ma-bt-lg=`${title!='Forgot my password' ? title==='Login' ? 'Login to your account':'Create your new account' : 'Enter your email'}`
+            form.form(class=`${title!='Forgot my password' ? title==='Login' ? 'form-login':'form-signup' : 'form-forgot'}`)
+                -if(title==='Signup')
+                    .form__group
+                        label.form__label(for='name') Name
+                        input#name.form__input(type='text', placeholder='Firstname Lastname', required)
                 .form__group
                     label.form__label(for='email') Email address
                     input#email.form__input(type='email', placeholder='you@example.com', required)
-                .form__group.ma-bt-md
-                    label.form__label(for='password') Password
-                    input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                -if(title!='Forgot my password')    
+                    .form__group.ma-bt-md
+                        label.form__label(for='password') Password
+                        input#password.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                -if(title==='Signup')
+                    .form__group.ma-bt-md
+                        label.form__label(for='password') Password confirm
+                        input#passwordConfirm.form__input(type='password', placeholder='••••••••', required, minlength='8')
+                -if(title==='Login')
+                    a.description__text#forgotPassword(href='/forgotmypassword') Forgot your password ?         
                 .form__group
-                    button.btn.btn--green Login
+                    button.btn.btn--green=`${title!='Forgot my password' ? title==='Login' ? 'Login':'Signup' : 'Send'}`

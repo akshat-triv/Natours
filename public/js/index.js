@@ -1,11 +1,17 @@
 import '@babel/polyfill';
 import { displayMap } from './mapbox';
-import { login, logout } from './login';
+import { login, logout, signup, forgot, reset } from './login';
 import { updateSettings } from './update';
 import { bookTour } from './stripe';
 
 const map = document.getElementById('map');
-const form = document.querySelector('.form-login');
+const form = document.querySelector('.form-login')
+  ? document.querySelector('.form-login')
+  : document.querySelector('.form-signup')
+  ? document.querySelector('.form-signup')
+  : document.querySelector('.form-forgot');
+
+const formReset = document.querySelector('.form-reset');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const formUser = document.querySelector('.form-user-data');
 const formSettings = document.querySelector('.form-user-settings');
@@ -21,8 +27,22 @@ if (form)
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    login(email, password);
+    let name = document.getElementById('name');
+    let password = document.getElementById('password');
+    let passwordConfirm = document.getElementById('passwordConfirm');
+
+    if (name) {
+      name = name.value;
+      password = password.value;
+      passwordConfirm = passwordConfirm.value;
+      return signup(name, email, password, passwordConfirm);
+    }
+    if (password) {
+      password = password.value;
+      return login(email, password);
+    }
+
+    forgot(email);
   });
 
 if (formUser) {
@@ -34,6 +54,16 @@ if (formUser) {
     form.append('photo', document.getElementById('photo').files[0]);
 
     updateSettings(form, 'Profile');
+  });
+}
+
+if (formReset) {
+  const token = formReset.dataset.token;
+  formReset.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('password-confirm').value;
+    reset({ password, passwordConfirm }, token);
   });
 }
 
