@@ -6,7 +6,7 @@ module.exports = class NewMail {
   constructor(user, link) {
     this.firstName = user.name.split(' ')[0];
     this.url = link;
-    this.from = `Akshat Trivedi <${process.env.EMAIL}>`;
+    this.from = `Natours <${process.env.EMAIL}>`;
     this.to = user.email;
   }
 
